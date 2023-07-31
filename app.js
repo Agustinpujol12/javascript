@@ -1,36 +1,56 @@
-function simularAhorros(montoInicial, tasaInteresAnual, meses) {
-    let saldo = montoInicial;
+// Definimos los productos con sus detalles
+const productos = [
+    { id: 1, nombre: "botin", precio: 500 },
+    { id: 2, nombre: "zapato", precio: 400 },
+    { id: 3, nombre: "zapatilla", precio: 300 }
+];
 
-    const tasaInteresMensual = tasaInteresAnual / 100 / 12;
 
-    for (let i = 1; i <= meses; i++) {
-      const intereses = saldo * tasaInteresMensual;
-    saldo += intereses;
-    }
+let carrito = [];
 
-    return saldo;
-}
-
-function ejecutarSimulacion() {
-    const montoInicial = parseFloat(prompt("Ingrese el monto inicial de ahorros:"));
-    const opcionInteres = parseInt(prompt("Seleccione una opción de tasa de interés:\n1. Baja (1%)\n2. Media (3%)\n3. Alta (5%)"));
-
-    let tasaInteresAnual;
-    if (opcionInteres === 1) {
-    tasaInteresAnual = 1;
-    } else if (opcionInteres === 2) {
-    tasaInteresAnual = 3;
-    } else if (opcionInteres === 3) {
-    tasaInteresAnual = 5;
+function agregarAlCarrito(productoId) {
+    const productoEncontrado = productos.find((producto) => producto.id === productoId);
+    if (productoEncontrado) {
+    carrito.push(productoEncontrado);
+    alert(`Se agregó "${productoEncontrado.nombre}" al carrito.`);
     } else {
-    console.log("Opción inválida. Se utilizará la tasa de interés por defecto (3%).");
-    tasaInteresAnual = 3;
+    alert("Producto no encontrado.");
     }
-
-    const meses = parseInt(prompt("Ingrese la cantidad de meses a simular:"));
-
-    const saldoFinal = simularAhorros(montoInicial, tasaInteresAnual, meses);
-    alert(`Saldo final después de ${meses} meses: $${saldoFinal.toFixed(2)}`);
 }
 
-ejecutarSimulacion();
+
+function calcularTotal() {
+    const total = carrito.reduce((acumulador, producto) => acumulador + producto.precio, 0);
+    return total;
+}
+
+function mostrarProductos() {
+    let mensaje = "Productos disponibles:\n";
+    productos.forEach((producto) => {
+    mensaje += `${producto.id}. ${producto.nombre} - $${producto.precio}\n`;
+    });
+    return mensaje;
+}
+
+function comprar() {
+    do {
+        const mensaje = "==== Carrito de Compras ====\n" + mostrarProductos() + "\nIngrese el ID del producto que desea agregar al carrito:\n(Para salir, ingrese 0)";
+        const opcion = parseInt(prompt(mensaje));
+
+    if (opcion === 0) {
+        break;
+    } else {
+        agregarAlCarrito(opcion);
+    }
+    } while (true);
+
+    let resumen = "==== Resumen de la Compra ====\n";
+    carrito.forEach((producto) => {
+    resumen += `${producto.nombre} - $${producto.precio}\n`;
+    });
+
+    const totalCompra = calcularTotal();
+    resumen += `Total de la compra: $${totalCompra}`;
+    alert(resumen);
+}
+comprar();
